@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unofficial Gazette PRP 2025</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
+        h1 { text-align: center; color: #2c3e50; }
+        .stats-container { display: flex; justify-content: space-around; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .stat-box { text-align: center; }
+        .stat-box span { display: block; font-size: 1.2em; font-weight: bold; color: #27ae60; }
+        #searchBar { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #2980b9; color: white; text-transform: uppercase; letter-spacing: 0.03em; }
+        tr:hover { background-color: #f1f1f1; }
+    </style>
+</head>
+<body>
+
+    <h1>Unofficial Gazette PRP 2025</h1>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <p>Highest Merit (First Candidate)</p>
+            <span id="highestMerit">0.00</span>
+        </div>
+        <div class="stat-box">
+            <p>Lowest Merit (Last Candidate)</p>
+            <span id="lowestMerit" style="color: #e74c3c;">0.00</span>
+        </div>
+    </div>
+
+    <input type="text" id="searchBar" onkeyup="searchTable()" placeholder="Search for candidate name...">
+
+    <table id="meritTable">
+        <thead>
+            <tr>
+                <th>Sr. No</th>
+                <th>Candidate Name</th>
+                <th>Father's Name</th>
+                <th>Aggregate/Merit</th>
+                <th>Specialty</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+
+    <script>
+        // REPLACE THIS ARRAY WITH YOUR EXCEL DATA
+        const candidateData = [
+            { sr: 1, name: "Ahmed Khan", father: "Abdul Khan", merit: 92.45, specialty: "Medicine" },
+            { sr: 2, name: "Sara Ali", father: "Ali Raza", merit: 89.30, specialty: "Surgery" },
+            { sr: 3, name: "Zainab Bibi", father: "Mohammad Arif", merit: 85.12, specialty: "Pediatrics" },
+            { sr: 4, name: "Usman Sheikh", father: "Ibrahim Sheikh", merit: 78.90, specialty: "Gynae" },
+            // Add as many rows as you want...
+        ];
+
+        function populateTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = "";
+
+            candidateData.forEach(item => {
+                let row = `<tr>
+                    <td>${item.sr}</td>
+                    <td>${item.name}</td>
+                    <td>${item.father}</td>
+                    <td>${item.merit}</td>
+                    <td>${item.specialty}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+
+            // Display Highest and Lowest Merit
+            if(candidateData.length > 0) {
+                document.getElementById('highestMerit').innerText = candidateData[0].merit;
+                document.getElementById('lowestMerit').innerText = candidateData[candidateData.length - 1].merit;
+            }
+        }
+
+        function searchTable() {
+            let input = document.getElementById("searchBar").value.toUpperCase();
+            let tr = document.getElementById("tableBody").getElementsByTagName("tr");
+
+            for (let i = 0; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName("td")[1]; // Index 1 is the Name column
+                if (td) {
+                    let textValue = td.textContent || td.innerText;
+                    tr[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+                }
+            }
+        }
+
+        // Initialize table on load
+        window.onload = populateTable;
+    </script>
+</body>
+</html>
