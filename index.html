@@ -1,69 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>Unofficial Gazette PRP 2025</title>
-<style>
-body { font-family: Arial, Helvetica, sans-serif; margin: 20px; }
-h1 { margin-bottom: 0.25rem; }
-.summary { margin: 0.5rem 0 1rem 0; font-weight: 600; }
-#searchBox { padding: 8px; width: 320px; max-width: 90%; margin: 12px 0; }
-table { border-collapse: collapse; width: 100%; }
-th, td { border: 1px solid #ccc; padding: 6px 8px; font-size: 13px; }
-th { background: #f2f2f2; position: sticky; top: 0; z-index: 2; }
-tbody tr:nth-child(even) { background: #fafafa; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unofficial Gazette PRP 2025</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; }
+        h1 { color: #2c3e50; text-align: center; }
+        .stats-container { display: flex; justify-content: space-around; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .stat-box { text-align: center; font-weight: bold; font-size: 1.2rem; color: #e67e22; }
+        #searchBar { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #2980b9; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
 </head>
 <body>
 
-<h1>Unofficial Gazette PRP 2025</h1>
+    <h1>Unofficial Gazette PRP 2025</h1>
 
-<div class="summary">
-  Highest merit: 21.0 &nbsp;&nbsp; | &nbsp;&nbsp;
-  Lowest merit: 17.0
-</div>
+    <div class="stats-container">
+        <div class="stat-box">Highest Merit: <span id="highMerit">-</span></div>
+        <div class="stat-box">Lowest Merit: <span id="lowMerit">-</span></div>
+    </div>
 
-<input id="searchBox" type="text" placeholder="Search by candidate name..." onkeyup="searchName()" />
+    <input type="text" id="searchBar" onkeyup="searchTable()" placeholder="Search for candidate names...">
 
-<table id="gazetteTable">
-<thead>
-<tr>
-<th>Applicant ID</th>
-<th>PMDC Number</th>
-<th>Name</th>
-<th>Degree</th>
-<th>MDCAT</th>
-<th>House Job</th>
-<th>Experience</th>
-<th>Program(Attempt) Marks</th>
-<th>Position</th>
-<th>Total aggregate</th>
-</tr>
-</thead>
-<tbody>
+    <table id="candidateTable">
+        <thead>
+            <tr id="tableHeader">
+                <th>Sr. No</th>
+                <th>Candidate Name</th>
+                <th>Father Name</th>
+                <th>Aggregate</th>
+                <th>Specialty</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr><td>1</td><td>Ahmad Ali</td><td>Muhammad Ali</td><td>92.50</td><td>Cardiology</td></tr>
+            <tr><td>2</td><td>Sana Khan</td><td>Abdul Khan</td><td>88.40</td><td>Pediatrics</td></tr>
+            <tr><td>3</td><td>Zainab Bibi</td><td>Umar Hassan</td><td>85.10</td><td>Dermatology</td></tr>
+            <tr><td>4</td><td>Bilal Ahmed</td><td>Sajid Ahmed</td><td>82.30</td><td>General Surgery</td></tr>
+        </tbody>
+    </table>
 
-<tr><td>… FULL LIST OF ALL CANDIDATES …</td></tr>
+    <script>
+        function calculateMerit() {
+            const rows = document.getElementById("tableBody").getElementsByTagName("tr");
+            if (rows.length > 0) {
+                // Assuming Aggregate is in the 4th column (index 3)
+                const firstRowAgg = rows[0].cells[3].innerText;
+                const lastRowAgg = rows[rows.length - 1].cells[3].innerText;
+                
+                document.getElementById("highMerit").innerText = firstRowAgg;
+                document.getElementById("lowMerit").innerText = lastRowAgg;
+            }
+        }
 
-<!-- The full candidate table rows are included here (entire dataset from your Excel) -->
+        function searchTable() {
+            let input = document.getElementById("searchBar").value.toUpperCase();
+            let table = document.getElementById("candidateTable");
+            let tr = table.getElementsByTagName("tr");
 
-</tbody>
-</table>
+            for (let i = 1; i < tr.length; i++) {
+                let tdName = tr[i].getElementsByTagName("td")[1]; // Search in Name column
+                if (tdName) {
+                    let txtValue = tdName.textContent || tdName.innerText;
+                    tr[i].style.display = txtValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+                }
+            }
+        }
 
-<script>
-function searchName() {
-  const input = document.getElementById("searchBox");
-  const filter = input.value.toLowerCase();
-  const table = document.getElementById("gazetteTable");
-  const trs = table.getElementsByTagName("tr");
-
-  for (let i = 1; i < trs.length; i++) {
-    const nameCell = trs[i].getElementsByTagName("td")[2];
-    if (!nameCell) continue;
-    const txt = (nameCell.textContent || nameCell.innerText).toLowerCase();
-    trs[i].style.display = txt.indexOf(filter) > -1 ? "" : "none";
-  }
-}
-</script>
-
+        // Run on load
+        window.onload = calculateMerit;
+    </script>
 </body>
 </html>
