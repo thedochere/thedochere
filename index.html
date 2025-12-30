@@ -5,96 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unofficial Gazette PRP 2025</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
-        h1 { text-align: center; color: #2c3e50; }
-        .stats-container { display: flex; justify-content: space-around; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .stat-box { text-align: center; }
-        .stat-box span { display: block; font-size: 1.2em; font-weight: bold; color: #27ae60; }
-        #searchBar { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #2980b9; color: white; text-transform: uppercase; letter-spacing: 0.03em; }
-        tr:hover { background-color: #f1f1f1; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background-color: #f0f2f5; color: #333; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a73e8; margin-bottom: 30px; }
+        
+        .merit-summary { display: flex; justify-content: space-around; margin-bottom: 30px; gap: 15px; }
+        .merit-card { flex: 1; padding: 20px; border-radius: 10px; text-align: center; color: white; }
+        .highest { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .lowest { background: linear-gradient(135deg, #dc3545, #a71d2a); }
+        .merit-card h3 { margin: 0; font-size: 0.9rem; text-transform: uppercase; opacity: 0.9; }
+        .merit-card div { font-size: 1.8rem; font-weight: bold; margin-top: 5px; }
+
+        #searchBar { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: border-color 0.3s; }
+        #searchBar:focus { border-color: #1a73e8; }
+
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: #f8f9fa; color: #5f6368; font-weight: 600; text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        tr:hover { background-color: #f1f8ff; }
+        .no-results { display: none; text-align: center; padding: 20px; color: #777; }
     </style>
 </head>
 <body>
 
+<div class="container">
     <h1>Unofficial Gazette PRP 2025</h1>
 
-    <div class="stats-container">
-        <div class="stat-box">
-            <p>Highest Merit (First Candidate)</p>
-            <span id="highestMerit">0.00</span>
+    <div class="merit-summary">
+        <div class="merit-card highest">
+            <h3>Highest Merit</h3>
+            <div id="highVal">21.00</div>
         </div>
-        <div class="stat-box">
-            <p>Lowest Merit (Last Candidate)</p>
-            <span id="lowestMerit" style="color: #e74c3c;">0.00</span>
+        <div class="merit-card lowest">
+            <h3>Lowest Merit</h3>
+            <div id="lowVal">5.00</div>
         </div>
     </div>
 
-    <input type="text" id="searchBar" onkeyup="searchTable()" placeholder="Search for candidate name...">
+    <input type="text" id="searchBar" onkeyup="filterTable()" placeholder="Search for candidate name...">
 
-    <table id="meritTable">
-        <thead>
+    <div class="table-wrapper">
+        <table id="gazetteTable">
+            <thead>
+                <tr>
+                    <th>Applicant ID</th>
+                    <th>PMDC Number</th>
+                    <th>Name</th>
+                    <th>MDCAT</th>
+                    <th>Experience</th>
+                    <th>Total Aggregate</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+        <div id="noResults" class="no-results">No candidates found matching that name.</div>
+    </div>
+</div>
+
+<script>
+    // Processed data from your file (Sorted by Aggregate)
+    const data = [
+        {"id":"13480","pmdc":"74419-P","name":"Maheen Safdar D/O Muhammad Rafique Safdar","mdcat":"1.701818","exp":"5","total":21.00},
+        {"id":"16868","pmdc":"97641-p","name":"Farheen Tariq D/O M.Tariq","mdcat":"1.658182","exp":"5","total":21.00},
+        {"id":"37606","pmdc":"947200-01- M","name":"Muhammad Ahmad Karim S/O Fazal Karim","mdcat":"1.892727","exp":"5","total":18.00},
+        {"id":"1356","pmdc":"97518-P","name":"Moniba Iqbal D/ O Sh Muhammad Iqbal","mdcat":"1.794545","exp":"0","total":18.00},
+        {"id":"15185","pmdc":"97571_p","name":"Mahrukh Mahmood D/O Abid Mehmood","mdcat":"1.723636","exp":"0","total":18.00},
+        {"id":"37602","pmdc":"910118-01- M","name":"Abdul Ahad S/O Ghulam Muhammad","mdcat":"1.858182","exp":"0","total":17.00},
+        {"id":"37607","pmdc":"905274-01- M","name":"Minahil Fatima D/O MUHAMMAD YASEEN BADAR","mdcat":"0","exp":"0","total":15.00},
+        {"id":"16104","pmdc":"102307-p","name":"Samana Bano D/O Manzoor Hussain","mdcat":"1.747273","exp":"0","total":14.00},
+        {"id":"37615","pmdc":"942978-01- M","name":"Saqlain Abbas S/O Ghulam Abbas","mdcat":"0","exp":"0","total":5.00}
+    ];
+
+    function loadTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = data.map(row => `
             <tr>
-                <th>Sr. No</th>
-                <th>Candidate Name</th>
-                <th>Father's Name</th>
-                <th>Aggregate/Merit</th>
-                <th>Specialty</th>
+                <td>${row.id}</td>
+                <td>${row.pmdc}</td>
+                <td>${row.name}</td>
+                <td>${row.mdcat}</td>
+                <td>${row.exp}</td>
+                <td><strong>${row.total.toFixed(2)}</strong></td>
             </tr>
-        </thead>
-        <tbody id="tableBody">
-            </tbody>
-    </table>
+        `).join('');
 
-    <script>
-        // REPLACE THIS ARRAY WITH YOUR EXCEL DATA
-        const candidateData = [
-            { sr: 1, name: "Ahmed Khan", father: "Abdul Khan", merit: 92.45, specialty: "Medicine" },
-            { sr: 2, name: "Sara Ali", father: "Ali Raza", merit: 89.30, specialty: "Surgery" },
-            { sr: 3, name: "Zainab Bibi", father: "Mohammad Arif", merit: 85.12, specialty: "Pediatrics" },
-            { sr: 4, name: "Usman Sheikh", father: "Ibrahim Sheikh", merit: 78.90, specialty: "Gynae" },
-            // Add as many rows as you want...
-        ];
-
-        function populateTable() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = "";
-
-            candidateData.forEach(item => {
-                let row = `<tr>
-                    <td>${item.sr}</td>
-                    <td>${item.name}</td>
-                    <td>${item.father}</td>
-                    <td>${item.merit}</td>
-                    <td>${item.specialty}</td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-
-            // Display Highest and Lowest Merit
-            if(candidateData.length > 0) {
-                document.getElementById('highestMerit').innerText = candidateData[0].merit;
-                document.getElementById('lowestMerit').innerText = candidateData[candidateData.length - 1].merit;
-            }
+        // Set Merit Stats based on the sorted array
+        if(data.length > 0) {
+            document.getElementById('highVal').innerText = data[0].total.toFixed(2);
+            document.getElementById('lowVal').innerText = data[data.length - 1].total.toFixed(2);
         }
+    }
 
-        function searchTable() {
-            let input = document.getElementById("searchBar").value.toUpperCase();
-            let tr = document.getElementById("tableBody").getElementsByTagName("tr");
+    function filterTable() {
+        const input = document.getElementById('searchBar').value.toLowerCase();
+        const rows = document.getElementById('tableBody').getElementsByTagName('tr');
+        let found = false;
 
-            for (let i = 0; i < tr.length; i++) {
-                let td = tr[i].getElementsByTagName("td")[1]; // Index 1 is the Name column
-                if (td) {
-                    let textValue = td.textContent || td.innerText;
-                    tr[i].style.display = textValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
+        for (let i = 0; i < rows.length; i++) {
+            const nameCol = rows[i].getElementsByTagName('td')[2];
+            if (nameCol) {
+                const txtValue = nameCol.textContent || nameCol.innerText;
+                if (txtValue.toLowerCase().indexOf(input) > -1) {
+                    rows[i].style.display = "";
+                    found = true;
+                } else {
+                    rows[i].style.display = "none";
                 }
             }
         }
+        document.getElementById('noResults').style.display = found ? "none" : "block";
+    }
 
-        // Initialize table on load
-        window.onload = populateTable;
-    </script>
+    window.onload = loadTable;
+</script>
+
 </body>
 </html>
